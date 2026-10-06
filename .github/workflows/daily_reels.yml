@@ -1,0 +1,94 @@
+name: Daily Autonomous Instagram Reel
+
+on:
+  schedule:
+    # 09:00 AM IST (03:30 UTC) Mon-Fri
+    - cron: '30 3 * * 1-5'
+    # 03:45 PM IST (10:15 UTC) Mon-Fri
+    - cron: '15 10 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      reel_type:
+        description: 'Select Reel Type (morning or evening)'
+        required: true
+        default: 'morning'
+        type: choice
+        options:
+          - morning
+          - evening
+
+jobs:
+  generate_and_post:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install System Dependencies (FFmpeg)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-liberation
+
+      - name: Install Python Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install pillow edge-tts yfinance
+
+      - name: Install Playwright & Browsers
+        run: |
+          npm install playwright
+          npx playwright install chromium --with-deps
+
+      - name: Determine Reel Type
+        id: reel_config
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "type=${{ github.event.inputs.reel_type }}" >> $GITHUB_OUTPUT
+          else
+            # Check current UTC hour
+            HOUR=$(date -u +%H)
+            if [ "$HOUR" -lt 7 ]; then
+              echo "type=morning" >> $GITHUB_OUTPUT
+            else
+              echo "type=evening" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: Generate Reel Video & AI Voiceover
+        run: |
+          python daily-reel-engine/daily_reel_generator.py --type ${{ steps.reel_config.outputs.type }} --out reel.mp4
+
+      - name: Post Reel to Instagram
+        env:
+          IG_COOKIES_JSON: ${{ secrets.IG_COOKIES_JSON }}
+        run: |
+          node -e "
+          const fs = require('fs');
+          if (process.env.IG_COOKIES_JSON) {
+            fs.mkdirSync('./session', { recursive: true });
+            fs.writeFileSync('./session/cookies.json', process.env.IG_COOKIES_JSON);
+            console.log('Restored Instagram session from secrets');
+          }
+          "
+          # Run upload script
+          node daily-reel-engine/post_reel_final.mjs
+
+      - name: Upload Artifact on Failure (for Debugging)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reel-debug
+          path: |
+            *.png
+            reel.mp4

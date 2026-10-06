@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CPR Pro Trader – Master Combo Suite (Nifty 50 & Bank Nifty) | Nifty ₹99 · Bank Nifty ₹99 · Combo ₹149</title>
+  <meta name="description" content="Battle-tested 10:15 AM CPR intraday strategy for Nifty 50 & Bank Nifty option buyers. Pine Script v5 indicators, auto Excel calculators and master PDF guides. Instant download." />
+  <meta name="theme-color" content="#020617" />
+
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+          },
+          keyframes: {
+            pulseGlow: {
+              '0%,100%': { boxShadow: '0 0 0 0 rgba(16,185,129,0.55), 0 10px 40px -10px rgba(16,185,129,0.6)' },
+              '50%': { boxShadow: '0 0 0 10px rgba(16,185,129,0), 0 10px 50px -8px rgba(16,185,129,0.8)' },
+            },
+            floaty: {
+              '0%,100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-6px)' },
+            },
+            marquee: {
+              '0%': { transform: 'translateX(0)' },
+              '100%': { transform: 'translateX(-50%)' },
+            },
+          },
+          animation: {
+            pulseGlow: 'pulseGlow 2.4s ease-in-out infinite',
+            floaty: 'floaty 4s ease-in-out infinite',
+            marquee: 'marquee 35s linear infinite',
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <style>
+    html { scroll-padding-top: 84px; }
+    body { -webkit-font-smoothing: antialiased; }
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(148,163,184,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148,163,184,0.06) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: radial-gradient(ellipse at 50% 0%, #000 30%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse at 50% 0%, #000 30%, transparent 75%);
+    }
+    .glass {
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+    }
+    .text-gradient {
+      background: linear-gradient(90deg, #34d399 0%, #10b981 40%, #818cf8 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .card-border {
+      position: relative;
+    }
+    .card-border::before {
+      content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
+      background: linear-gradient(140deg, rgba(16,185,129,0.7), rgba(99,102,241,0.5) 50%, rgba(16,185,129,0.1));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
+    }
+    .logo-glow { filter: drop-shadow(0 0 6px rgba(16,185,129,0.9)) drop-shadow(0 0 14px rgba(16,185,129,0.5)); }
+    .candle { opacity: 0; transform-origin: center bottom; animation: candleIn .35s ease-out forwards; }
+    @keyframes candleIn { from { opacity: 0; transform: scaleY(0.2); } to { opacity: 1; transform: scaleY(1); } }
+    .fade-late { opacity: 0; animation: fadeIn .6s ease-out forwards; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    .faq-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .35s ease; }
+    .faq-item.open .faq-body { grid-template-rows: 1fr; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); color: #10b981; }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .candle, .fade-late { animation: none; opacity: 1; }
+      .animate-pulseGlow, .animate-floaty, .animate-marquee { animation: none !important; }
+    }
+  </style>
+</head>
+
+<body class="bg-slate-950 text-slate-300 font-sans selection:bg-emerald-500/30 selection:text-white">
+
+  <!-- ============ TOP ANNOUNCEMENT ============ -->
+  <div class="bg-gradient-to-r from-emerald-600 via-emerald-500 to-indigo-600 text-white text-xs sm:text-sm font-semibold text-center py-2 px-4">
+    🔥 Launch Offer: Nifty ₹99 · Bank Nifty ₹99 · <span class="underline decoration-white/50 underline-offset-2">Combo just ₹149</span> — ends in
+    <span class="font-mono tabular-nums" data-countdown>02:45:10</span>
+  </div>
+
+  <!-- ============ 1. STICKY NAVIGATION ============ -->
+  <header id="navbar" class="sticky top-0 z-50 transition-all duration-300 border-b border-transparent">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="#top" class="flex items-center gap-2.5 group" aria-label="CPR Pro Trader home">
+        <span class="relative grid place-items-center w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+          <svg class="logo-glow" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <line x1="6" y1="3" x2="6" y2="21" stroke="#10b981" stroke-width="1.6" stroke-linecap="round"/>
+            <rect x="3.5" y="7" width="5" height="9" rx="1" fill="#10b981"/>
+            <line x1="12" y1="2" x2="12" y2="16" stroke="#f43f5e" stroke-width="1.6" stroke-linecap="round"/>
+            <rect x="9.5" y="5" width="5" height="7" rx="1" fill="#f43f5e"/>
+            <line x1="18" y1="1" x2="18" y2="14" stroke="#10b981" stroke-width="1.6" stroke-linecap="round"/>
+            <rect x="15.5" y="3" width="5" height="8" rx="1" fill="#10b981"/>
+          </svg>
+        </span>
+        <span class="font-extrabold tracking-tight text-white text-[15px] sm:text-base">CPR <span class="text-emerald-400">PRO</span> TRADER</span>
+      </a>
+
+      <div class="hidden lg:flex items-center gap-8 text-sm font-medium">
+        <a href="#strategy" class="nav-link text-slate-400 hover:text-white transition">The Strategy</a>
+        <a href="#inside" class="nav-link text-slate-400 hover:text-white transition">What's Inside</a>
+        <a href="#backtest" class="nav-link text-slate-400 hover:text-white transition">Live Backtest</a>
+        <a href="#pricing" class="nav-link text-slate-400 hover:text-white transition">Pricing</a>
+        <a href="#faq" class="nav-link text-slate-400 hover:text-white transition">FAQ</a>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <a href="#pricing" class="hidden sm:inline-flex items-center gap-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm px-4 py-2.5 transition shadow-lg shadow-emerald-500/25">
+          <i data-lucide="zap" class="w-4 h-4"></i> Get Combo @ ₹149
+        </a>
+        <button id="menuBtn" class="lg:hidden p-2 rounded-lg text-slate-300 hover:bg-slate-800" aria-label="Open menu" aria-expanded="false">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div id="mobileMenu" class="lg:hidden hidden border-t border-slate-800 bg-slate-950/95 backdrop-blur-xl">
+      <div class="px-4 py-4 flex flex-col gap-1 text-sm font-medium">
+        <a href="#strategy" class="mobile-link px-3 py-3 rounded-lg hover:bg-slate-900 text-slate-300">The Strategy</a>
+        <a href="#inside" class="mobile-link px-3 py-3 rounded-lg hover:bg-slate-900 text-slate-300">What's Inside</a>
+        <a href="#backtest" class="mobile-link px-3 py-3 rounded-lg hover:bg-slate-900 text-slate-300">Live Backtest</a>
+        <a href="#pricing" class="mobile-link px-3 py-3 rounded-lg hover:bg-slate-900 text-slate-300">Pricing</a>
+        <a href="#faq" class="mobile-link px-3 py-3 rounded-lg hover:bg-slate-900 text-slate-300">FAQ</a>
+        <a href="#pricing" class="mobile-link mt-2 text-center rounded-lg bg-emerald-500 text-slate-950 font-bold px-4 py-3">Get Combo @ ₹149</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ============ 2. HERO ============ -->
+    <section class="relative overflow-hidden">
+      <div class="absolute inset-0 grid-bg pointer-events-none"></div>
+      <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[600px] rounded-full bg-emerald-500/10 blur-3xl pointer-events-none"></div>
+      <div class="absolute top-40 -right-40 w-[500px] h-[500px] rounded-full bg-indigo-600/10 blur-3xl pointer-events-none"></div>
+
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 sm:pt-20 pb-16 lg:pb-24 grid lg:grid-cols-12 gap-12 items-center">
+        <!-- Copy -->
+        <div class="lg:col-span-6 text-center lg:text-left">
+          <div class="inline-flex items-center gap-2 rounded-full glass px-3.5 py-1.5 text-[11px] sm:text-xs font-bold tracking-wider text-emerald-300 mb-6">
+            <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span></span>
+            ⚡ INSTITUTIONAL INTRADAY CPR STRATEGY (NIFTY &amp; BANK NIFTY)
+          </div>
+
+          <h1 class="text-[2.1rem] leading-[1.1] sm:text-5xl xl:text-[3.6rem] font-black tracking-tight text-white">
+            Stop Guessing Candle Patterns.
+            <span class="block mt-2 text-gradient">Trade with Exact Institutional Mathematical Pivot Levels.</span>
+          </h1>
+
+          <p class="mt-6 text-base sm:text-lg text-slate-400 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+            A battle-tested <strong class="text-white font-semibold">10:15 AM Rule-based</strong> Intraday setup engineered for Indian Index Option Buyers.
+            <span class="text-slate-300">Pine Script v5 Indicators + Auto Excel Calculators + Master Guides.</span>
+          </p>
+
+          <div class="mt-8 flex flex-col items-center lg:items-start gap-4">
+            <a href="#pricing" class="group w-full sm:w-auto inline-flex items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-slate-950 font-extrabold text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-5 animate-pulseGlow transition">
+              <i data-lucide="unlock" class="w-5 h-5"></i>
+              <span>Unlock Master Combo for ₹149 <span class="hidden sm:inline font-bold opacity-80">(Nifty + Bank Nifty)</span></span>
+              <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition"></i>
+            </a>
+            <span class="sm:hidden -mt-2 text-xs font-semibold text-emerald-300">Nifty + Bank Nifty Â· or single index from â¹99</span>
+
+            <ul class="flex flex-wrap justify-center lg:justify-start gap-x-4 gap-y-2 text-xs sm:text-sm text-slate-400 font-medium">
+              <li class="flex items-center gap-1.5"><i data-lucide="download" class="w-4 h-4 text-emerald-400"></i>Instant Download</li>
+              <li class="flex items-center gap-1.5"><i data-lucide="line-chart" class="w-4 h-4 text-indigo-400"></i>TradingView v5 Compatible</li>
+              <li class="flex items-center gap-1.5"><i data-lucide="target" class="w-4 h-4 text-emerald-400"></i>Strictly 1 Trade/Day</li>
+              <li class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4 text-indigo-400"></i>0 Overtrading</li>
+            </ul>
+          </div>
+
+          <!-- Glass stat badges -->
+          <div class="mt-10 grid grid-cols-3 gap-3 max-w-md mx-auto lg:mx-0">
+            <div class="glass rounded-xl p-3 text-center lg:text-left">
+              <div class="text-xl sm:text-2xl font-black text-white font-mono">1</div>
+              <div class="text-[11px] text-slate-400 font-medium">Trade / Day</div>
+            </div>
+            <div class="glass rounded-xl p-3 text-center lg:text-left">
+              <div class="text-xl sm:text-2xl font-black text-emerald-400 font-mono">10:15</div>
+              <div class="text-[11px] text-slate-400 font-medium">Fixed Entry Window</div>
+            </div>
+            <div class="glass rounded-xl p-3 text-center lg:text-left">
+              <div class="text-xl sm:text-2xl font-black text-indigo-400 font-mono">2</div>
+              <div class="text-[11px] text-slate-400 font-medium">Indices Covered</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Chart Card -->
+        <div class="lg:col-span-6" id="backtest">
+          <div class="relative animate-floaty">
+            <div class="absolute -inset-4 bg-gradient-to-tr from-emerald-500/20 via-transparent to-indigo-500/20 blur-2xl rounded-3xl"></div>
+            <div class="relative card-border rounded-2xl bg-slate-900/90 shadow-2xl shadow-black/60 overflow-hidden">
+              <!-- Chart toolbar -->
+              <div class="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-900">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="flex gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span><span class="w-2.5 h-2.5 rounded-full bg-amber-400/80"></span><span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span></div>
+                  <div class="flex items-center gap-2 text-xs font-semibold min-w-0">
+                    <span class="text-white truncate">NIFTY 50</span>
+                    <span class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">5m</span>
+                    <span class="hidden sm:inline px-1.5 py-0.5 rounded bg-indigo-500/15 text-indigo-300">CPR Pro v5</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2 text-xs font-mono">
+                  <span class="text-slate-400">LTP</span>
+                  <span class="text-emerald-400 font-bold">24,621.40</span>
+                  <span class="text-emerald-400 hidden sm:inline">+0.47%</span>
+                </div>
+              </div>
+
+              <!-- SVG chart (candles injected by JS) -->
+              <div class="relative px-2 pt-2 pb-1 bg-[#0b1220]">
+                <svg id="heroChart" viewBox="0 0 600 330" class="w-full h-auto block" role="img" aria-label="Simulated 5-minute Nifty chart showing CPR levels, R1 breakout at 10:15 AM and R2 target reached for +45 points"></svg>
+
+                <!-- Profit callout -->
+                <div class="fade-late absolute top-[6%] left-[6%] glass rounded-lg px-2.5 py-1.5 sm:px-3 sm:py-2 border-emerald-500/40" style="animation-delay:4.2s">
+                  <div class="flex items-center gap-1.5 text-emerald-400 font-black text-sm sm:text-lg font-mono leading-none">
+                    <i data-lucide="trending-up" class="w-4 h-4 sm:w-5 sm:h-5"></i>+45 pts
+                  </div>
+                  <div class="text-[9px] sm:text-[10px] text-slate-400 font-semibold mt-1 tracking-wide">TARGET R2 HIT ✓</div>
+                </div>
+              </div>
+
+              <!-- Chart footer stats -->
+              <div class="grid grid-cols-4 divide-x divide-slate-800 border-t border-slate-800 text-center bg-slate-900">
+                <div class="py-3"><div class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Entry</div><div class="text-xs sm:text-sm font-bold text-white font-mono">24,575</div></div>
+                <div class="py-3"><div class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Stop</div><div class="text-xs sm:text-sm font-bold text-rose-400 font-mono">24,530</div></div>
+                <div class="py-3"><div class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Target</div><div class="text-xs sm:text-sm font-bold text-emerald-400 font-mono">24,620</div></div>
+                <div class="py-3"><div class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">R:R</div><div class="text-xs sm:text-sm font-bold text-indigo-300 font-mono">1 : 1</div></div>
+              </div>
+            </div>
+            <p class="mt-3 text-center text-[11px] text-slate-500">Illustrative backtest replay. Past performance does not guarantee future results.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ticker marquee -->
+      <div class="relative border-y border-slate-800/80 bg-slate-900/40 overflow-hidden">
+        <div class="flex w-max animate-marquee py-3 text-xs font-mono font-semibold">
+          <div class="flex gap-10 pr-10 text-slate-400" id="tickerA"></div>
+          <div class="flex gap-10 pr-10 text-slate-400" aria-hidden="true" id="tickerB"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 3. PAIN POINT ============ -->
+    <section class="py-20 sm:py-28">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto reveal">
+          <span class="text-xs font-bold tracking-[0.2em] text-rose-400 uppercase">The Brutal Truth</span>
+          <h2 class="mt-3 text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">Why <span class="text-rose-400">95%</span> Option Buyers Lose</h2>
+          <p class="mt-4 text-slate-400 text-base sm:text-lg">It's not the market. It's the lack of a fixed, mathematical, rule-based edge.</p>
+        </div>
+
+        <div class="mt-14 grid md:grid-cols-3 gap-6">
+          <div class="reveal rounded-2xl bg-slate-900 border border-slate-800 p-7 hover:border-rose-500/40 transition">
+            <div class="w-12 h-12 rounded-xl bg-rose-500/10 border border-rose-500/30 grid place-items-center text-2xl">❌</div>
+            <h3 class="mt-5 text-xl font-bold text-white">Overtrading</h3>
+            <p class="mt-2 text-slate-400 leading-relaxed">Taking 10 random trades out of FOMO. Brokerage, slippage and theta decay silently eat your capital — even on "green" days.</p>
+            <div class="mt-5 flex items-center gap-2 text-xs font-mono text-rose-400 bg-rose-500/5 border border-rose-500/20 rounded-lg px-3 py-2">
+              <i data-lucide="trending-down" class="w-4 h-4"></i> Avg. 8–12 trades/day → net loss
+            </div>
+          </div>
+
+          <div class="reveal rounded-2xl bg-slate-900 border border-slate-800 p-7 hover:border-rose-500/40 transition" style="transition-delay:.1s">
+            <div class="w-12 h-12 rounded-xl bg-rose-500/10 border border-rose-500/30 grid place-items-center text-2xl">❌</div>
+            <h3 class="mt-5 text-xl font-bold text-white">Lagging Indicators</h3>
+            <p class="mt-2 text-slate-400 leading-relaxed">Moving averages that give buy signals after the rally is over. You enter at the top, the premium collapses, SL hits.</p>
+            <div class="mt-5 flex items-center gap-2 text-xs font-mono text-rose-400 bg-rose-500/5 border border-rose-500/20 rounded-lg px-3 py-2">
+              <i data-lucide="clock-alert" class="w-4 h-4"></i> Late entry → premium decay
+            </div>
+          </div>
+
+          <div class="reveal relative rounded-2xl bg-gradient-to-b from-emerald-500/10 to-slate-900 border border-emerald-500/40 p-7 shadow-xl shadow-emerald-500/10" style="transition-delay:.2s">
+            <span class="absolute -top-3 right-6 text-[10px] font-black tracking-wider bg-emerald-500 text-slate-950 px-2.5 py-1 rounded-full">THE SOLUTION</span>
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/15 border border-emerald-500/40 grid place-items-center text-2xl">✅</div>
+            <h3 class="mt-5 text-xl font-bold text-white">The CPR Advantage</h3>
+            <p class="mt-2 text-slate-300 leading-relaxed">Fixed reference levels projected at 10:15 AM daily. Strict entry, defined SL, and <strong class="text-emerald-300">1 trade per day</strong> discipline.</p>
+            <div class="mt-5 flex items-center gap-2 text-xs font-mono text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-3 py-2">
+              <i data-lucide="crosshair" class="w-4 h-4"></i> Leading levels → pre-defined edge
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 4. STRATEGY BREAKDOWN ============ -->
+    <section id="strategy" class="py-20 sm:py-28 bg-slate-900/40 border-y border-slate-800/80 relative overflow-hidden">
+      <div class="absolute -left-40 top-20 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto reveal">
+          <span class="text-xs font-bold tracking-[0.2em] text-indigo-400 uppercase">The Strategy</span>
+          <h2 class="mt-3 text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">The <span class="text-gradient">10:15 AM</span> Institutional Rule</h2>
+          <p class="mt-4 text-slate-400 text-base sm:text-lg">Three steps. Zero guesswork. The same routine every single trading day.</p>
+        </div>
+
+        <div class="mt-16 relative grid lg:grid-cols-3 gap-6 lg:gap-8">
+          <!-- connector line -->
+          <div class="hidden lg:block absolute top-[52px] left-[16%] right-[16%] h-px bg-gradient-to-r from-slate-700 via-indigo-500/60 to-emerald-500/70"></div>
+
+          <!-- Step 1 -->
+          <div class="reveal relative">
+            <div class="flex lg:justify-center">
+              <div class="relative z-10 inline-flex items-center gap-2 rounded-full bg-slate-950 border border-slate-700 px-4 py-2 font-mono text-sm font-bold text-slate-200 shadow-lg">
+                <i data-lucide="eye" class="w-4 h-4 text-slate-400"></i> 09:15 – 10:15 AM
+              </div>
+            </div>
+            <div class="mt-6 rounded-2xl bg-slate-900 border border-slate-800 p-7 h-[calc(100%-4rem)]">
+              <div class="text-xs font-black tracking-widest text-slate-500">STEP 01</div>
+              <h3 class="mt-2 text-xl font-bold text-white">Reference Hour</h3>
+              <p class="mt-2 text-slate-400 leading-relaxed">Observation only. No trades. Let the opening volatility, gap fills and operator traps play out while you sit on your hands.</p>
+              <div class="mt-5 rounded-lg bg-slate-950 border border-slate-800 p-3 font-mono text-xs text-slate-400 flex items-center gap-2">
+                <i data-lucide="hand" class="w-4 h-4 text-amber-400"></i> status: <span class="text-amber-400">WAIT</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="reveal relative" style="transition-delay:.12s">
+            <div class="flex lg:justify-center">
+              <div class="relative z-10 inline-flex items-center gap-2 rounded-full bg-indigo-500/15 border border-indigo-500/50 px-4 py-2 font-mono text-sm font-bold text-indigo-200 shadow-lg shadow-indigo-500/20">
+                <i data-lucide="cpu" class="w-4 h-4 text-indigo-300"></i> 10:15 AM
+              </div>
+            </div>
+            <div class="mt-6 rounded-2xl bg-slate-900 border border-indigo-500/30 p-7 h-[calc(100%-4rem)]">
+              <div class="text-xs font-black tracking-widest text-indigo-400">STEP 02</div>
+              <h3 class="mt-2 text-xl font-bold text-white">CPR Levels Auto-Plot</h3>
+              <p class="mt-2 text-slate-400 leading-relaxed">Daily CPR levels (TC, Pivot, BC, R1/R2, S1/S2) auto-plot on TradingView via our Pine Script v5 indicator. No manual math.</p>
+              <div class="mt-5 rounded-lg bg-slate-950 border border-slate-800 p-3 font-mono text-[11px] leading-5">
+                <div class="flex justify-between"><span class="text-emerald-400">R2</span><span class="text-slate-300">24,620.00</span></div>
+                <div class="flex justify-between"><span class="text-emerald-300">R1</span><span class="text-slate-300">24,575.00</span></div>
+                <div class="flex justify-between"><span class="text-indigo-300">TC · P · BC</span><span class="text-slate-300">24,530 · 515 · 500</span></div>
+                <div class="flex justify-between"><span class="text-rose-400">S1</span><span class="text-slate-300">24,455.00</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="reveal relative" style="transition-delay:.24s">
+            <div class="flex lg:justify-center">
+              <div class="relative z-10 inline-flex items-center gap-2 rounded-full bg-emerald-500/15 border border-emerald-500/50 px-4 py-2 font-mono text-sm font-bold text-emerald-200 shadow-lg shadow-emerald-500/20">
+                <i data-lucide="rocket" class="w-4 h-4 text-emerald-300"></i> After 10:15 AM
+              </div>
+            </div>
+            <div class="mt-6 rounded-2xl bg-slate-900 border border-emerald-500/30 p-7 h-[calc(100%-4rem)]">
+              <div class="text-xs font-black tracking-widest text-emerald-400">STEP 03</div>
+              <h3 class="mt-2 text-xl font-bold text-white">Breakout → Execute</h3>
+              <p class="mt-2 text-slate-400 leading-relaxed">5m candle <strong class="text-white">body close</strong> across R1/S1 → Enter <strong class="text-white">ATM strike</strong> → Target R2/S2. One trade. Done for the day.</p>
+              <div class="mt-5 flex flex-wrap gap-2 text-[11px] font-bold font-mono">
+                <span class="px-2 py-1 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Close &gt; R1 → BUY CE</span>
+                <span class="px-2 py-1 rounded bg-rose-500/15 text-rose-300 border border-rose-500/30">Close &lt; S1 → BUY PE</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-14 text-center reveal">
+          <a href="#pricing" class="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-semibold">
+            Get the exact rulebook &amp; indicators <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 5. WHAT YOU GET ============ -->
+    <section id="inside" class="py-20 sm:py-28">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto reveal">
+          <span class="text-xs font-bold tracking-[0.2em] text-emerald-400 uppercase">What's Inside</span>
+          <h2 class="mt-3 text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">The Master Combo Bundle</h2>
+          <p class="mt-4 text-slate-400 text-base sm:text-lg">Everything you need to execute the CPR system on both indices — from chart to order window.</p>
+        </div>
+
+        <div class="mt-14 grid md:grid-cols-2 gap-6">
+          <!-- Package 1 -->
+          <article class="reveal group rounded-2xl bg-slate-900 border border-slate-800 hover:border-emerald-500/40 p-7 transition">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-xl bg-emerald-500/10 border border-emerald-500/30 grid place-items-center"><i data-lucide="bar-chart-3" class="w-7 h-7 text-emerald-400"></i></div>
+                <div>
+                  <div class="text-[11px] font-black tracking-widest text-emerald-400">PACKAGE 01</div>
+                  <h3 class="text-xl font-bold text-white">Nifty 50 CPR Pro Toolkit</h3>
+                </div>
+              </div>
+              <span class="hidden sm:inline text-xs font-mono font-bold text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 rounded px-2 py-0.5">₹99</span>
+            </div>
+            <ul class="mt-6 space-y-3 text-sm">
+              <li class="flex gap-3"><i data-lucide="code-2" class="w-5 h-5 text-indigo-400 shrink-0"></i><span><strong class="text-white">Pine Script v5 Indicator</strong> — auto CPR, R1/R2, S1/S2 &amp; 10:15 breakout alerts</span></li>
+              <li class="flex gap-3"><i data-lucide="sheet" class="w-5 h-5 text-emerald-400 shrink-0"></i><span><strong class="text-white">Excel Calculator</strong> — enter prev. day H/L/C, get every level instantly</span></li>
+              <li class="flex gap-3"><i data-lucide="file-text" class="w-5 h-5 text-slate-300 shrink-0"></i><span><strong class="text-white">20-Page PDF Strategy Guide</strong> — rules, SL logic &amp; real chart examples</span></li>
+            </ul>
+          </article>
+
+          <!-- Package 2 -->
+          <article class="reveal group rounded-2xl bg-slate-900 border border-slate-800 hover:border-emerald-500/40 p-7 transition" style="transition-delay:.1s">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-xl bg-emerald-500/10 border border-emerald-500/30 grid place-items-center"><i data-lucide="landmark" class="w-7 h-7 text-emerald-400"></i></div>
+                <div>
+                  <div class="text-[11px] font-black tracking-widest text-emerald-400">PACKAGE 02</div>
+                  <h3 class="text-xl font-bold text-white">Bank Nifty CPR Pro Toolkit</h3>
+                </div>
+              </div>
+              <span class="hidden sm:inline text-xs font-mono font-bold text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 rounded px-2 py-0.5">₹99</span>
+            </div>
+            <ul class="mt-6 space-y-3 text-sm">
+              <li class="flex gap-3"><i data-lucide="code-2" class="w-5 h-5 text-indigo-400 shrink-0"></i><span><strong class="text-white">Pine Script v5 Indicator</strong> — calibrated for Bank Nifty volatility</span></li>
+              <li class="flex gap-3"><i data-lucide="sheet" class="w-5 h-5 text-emerald-400 shrink-0"></i><span><strong class="text-white">Excel Calculator</strong> — levels + lot-size based position sizing</span></li>
+              <li class="flex gap-3"><i data-lucide="file-text" class="w-5 h-5 text-slate-300 shrink-0"></i><span><strong class="text-white">20-Page PDF Strategy Guide</strong> — Bank Nifty specific playbook</span></li>
+            </ul>
+          </article>
+
+          <!-- Package 3 -->
+          <article class="reveal group rounded-2xl bg-slate-900 border border-slate-800 hover:border-indigo-500/40 p-7 transition">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-xl bg-indigo-500/10 border border-indigo-500/30 grid place-items-center"><i data-lucide="layers" class="w-7 h-7 text-indigo-400"></i></div>
+                <div>
+                  <div class="text-[11px] font-black tracking-widest text-indigo-400">PACKAGE 03</div>
+                  <h3 class="text-xl font-bold text-white">Master Cross-Index Bundle Guide</h3>
+                </div>
+              </div>
+              <span class="hidden sm:inline text-[10px] font-black tracking-wider text-amber-300 bg-amber-500/10 border border-amber-500/30 rounded px-2 py-0.5">COMBO ONLY</span>
+            </div>
+            <p class="mt-5 text-sm text-slate-400">Step-by-step strike execution matrix for the platforms you already use:</p>
+            <div class="mt-4 flex flex-wrap gap-2">
+              <span class="px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs font-semibold text-slate-200">Zerodha Kite</span>
+              <span class="px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs font-semibold text-slate-200">Angel One</span>
+              <span class="px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs font-semibold text-slate-200">Groww</span>
+            </div>
+          </article>
+
+          <!-- Bonus -->
+          <article class="reveal relative rounded-2xl bg-gradient-to-br from-amber-500/10 via-slate-900 to-slate-900 border border-amber-500/40 p-7" style="transition-delay:.1s">
+            <span class="absolute -top-3 left-7 text-[10px] font-black tracking-wider bg-amber-400 text-slate-950 px-2.5 py-1 rounded-full">🎁 COMBO BONUS</span>
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-xl bg-amber-500/10 border border-amber-500/30 grid place-items-center"><i data-lucide="sparkles" class="w-7 h-7 text-amber-400"></i></div>
+                <div>
+                  <div class="text-[11px] font-black tracking-widest text-amber-400">BONUS</div>
+                  <h3 class="text-xl font-bold text-white">Excel Auto CPR Range Predictor</h3>
+                </div>
+              </div>
+              <span class="hidden sm:inline text-[10px] font-black tracking-wider text-amber-300 bg-amber-500/10 border border-amber-500/30 rounded px-2 py-0.5">COMBO ONLY</span>
+            </div>
+            <p class="mt-5 text-sm text-slate-400">Know tomorrow's market character tonight. Narrow CPR vs Wide CPR trending forecast.</p>
+            <div class="mt-4 grid grid-cols-2 gap-3 text-xs">
+              <div class="rounded-lg bg-slate-950 border border-emerald-500/30 p-3">
+                <div class="font-bold text-emerald-400">Narrow CPR</div>
+                <div class="text-slate-400 mt-0.5">→ Trending day expected</div>
+              </div>
+              <div class="rounded-lg bg-slate-950 border border-slate-700 p-3">
+                <div class="font-bold text-slate-300">Wide CPR</div>
+                <div class="text-slate-400 mt-0.5">→ Sideways / avoid</div>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="mt-8 reveal rounded-2xl glass p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="text-sm text-slate-300">Both toolkits separately: <span class="line-through text-slate-500 font-mono">₹198</span> → Master Combo: <span class="text-emerald-400 font-black font-mono text-lg">₹149</span> <span class="text-amber-300 font-semibold">+ 2 bonuses</span></div>
+          <a href="#pricing" class="inline-flex items-center gap-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm px-5 py-3 transition">Claim the Bundle <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 6. PRICING ============ -->
+    <section id="pricing" class="py-20 sm:py-28 bg-slate-900/40 border-y border-slate-800/80 relative overflow-hidden">
+      <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto reveal">
+          <span class="text-xs font-bold tracking-[0.2em] text-emerald-400 uppercase">Pricing</span>
+          <h2 class="mt-3 text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">Pick Your Index. Or Get Both.</h2>
+          <p class="mt-4 text-slate-400 text-base sm:text-lg">One-time payment. Less than the cost of one bad option trade.</p>
+        </div>
+
+        <!-- Countdown -->
+        <div class="mt-10 max-w-md mx-auto reveal rounded-xl bg-rose-500/5 border border-rose-500/25 p-4">
+          <div class="flex items-center justify-center gap-2 text-xs font-bold text-rose-300 tracking-wider uppercase">
+            <i data-lucide="timer" class="w-4 h-4"></i> Launch Offer ends in
+          </div>
+          <div class="mt-3 flex items-center justify-center gap-2 sm:gap-3 font-mono">
+            <div class="text-center"><div id="cd-h" class="w-16 sm:w-20 py-2.5 rounded-lg bg-slate-900 border border-slate-800 text-3xl sm:text-4xl font-black text-white tabular-nums">02</div><div class="text-[10px] text-slate-500 mt-1 font-sans font-semibold">HOURS</div></div>
+            <div class="text-2xl font-black text-rose-400 -mt-5">:</div>
+            <div class="text-center"><div id="cd-m" class="w-16 sm:w-20 py-2.5 rounded-lg bg-slate-900 border border-slate-800 text-3xl sm:text-4xl font-black text-white tabular-nums">45</div><div class="text-[10px] text-slate-500 mt-1 font-sans font-semibold">MINUTES</div></div>
+            <div class="text-2xl font-black text-rose-400 -mt-5">:</div>
+            <div class="text-center"><div id="cd-s" class="w-16 sm:w-20 py-2.5 rounded-lg bg-slate-900 border border-slate-800 text-3xl sm:text-4xl font-black text-emerald-400 tabular-nums">10</div><div class="text-[10px] text-slate-500 mt-1 font-sans font-semibold">SECONDS</div></div>
+          </div>
+        </div>
+
+        <div class="mt-12 grid lg:grid-cols-3 gap-6 lg:gap-5 items-stretch max-w-6xl mx-auto">
+
+          <!-- Nifty ₹99 -->
+          <div class="reveal order-2 lg:order-1 rounded-3xl bg-slate-950/80 border border-slate-800 p-7 flex flex-col">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/30 grid place-items-center"><i data-lucide="bar-chart-3" class="w-5 h-5 text-emerald-400"></i></div>
+              <div>
+                <h3 class="text-lg font-bold text-white">Nifty 50 Pro Edition</h3>
+                <p class="text-xs text-slate-500">For Nifty index option buyers</p>
+              </div>
+            </div>
+            <div class="mt-6 flex items-end gap-2">
+              <span class="text-5xl font-black text-white font-mono leading-none">₹99</span>
+              <span class="text-sm text-slate-400 pb-1">one-time</span>
+            </div>
+            <ul class="mt-6 space-y-3 text-sm flex-1">
+              <li class="flex gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-400 shrink-0"></i>Nifty CPR Pine Script v5 Indicator</li>
+              <li class="flex gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-400 shrink-0"></i>Nifty Excel Auto Calculator</li>
+              <li class="flex gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-400 shrink-0"></i>Nifty 20-Page PDF Strategy Guide</li>
+              <li class="flex gap-3 text-slate-600"><i data-lucide="x" class="w-5 h-5 shrink-0"></i><span class="line-through">Bank Nifty Toolkit</span></li>
+              <li class="flex gap-3 text-slate-600"><i data-lucide="x" class="w-5 h-5 shrink-0"></i><span class="line-through">Combo-only Bonuses</span></li>
+            </ul>
+            <a href="#nifty-checkout" data-plan="nifty" class="plan-link mt-7 w-full inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700 hover:border-emerald-500/60 hover:bg-emerald-500/10 text-white font-bold px-5 py-3.5 transition">
+              Get Nifty Suite – ₹99
+            </a>
+          </div>
+
+          <!-- Combo ₹149 -->
+          <div class="reveal order-1 lg:order-2 relative card-border rounded-3xl bg-slate-950 shadow-2xl shadow-emerald-500/20 overflow-hidden flex flex-col lg:-my-4">
+            <div class="bg-gradient-to-r from-emerald-500 to-indigo-500 text-slate-950 text-center text-xs font-black tracking-widest py-2">
+              👑 MOST POPULAR — BEST VALUE
+            </div>
+            <div class="p-7 sm:p-8 flex flex-col flex-1">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <h3 class="text-xl font-bold text-white">Master Combo Suite</h3>
+                  <p class="text-xs text-slate-400">Nifty 50 + Bank Nifty + 2 Bonuses</p>
+                </div>
+                <span class="shrink-0 px-2.5 py-1 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-bold">SAVE ₹49</span>
+              </div>
+              <div class="mt-6 flex items-end gap-3 flex-wrap">
+                <span class="text-slate-500 text-xl font-semibold line-through font-mono">₹198</span>
+                <span class="text-6xl font-black text-white tracking-tight font-mono leading-none">₹149</span>
+                <span class="text-sm text-slate-400 pb-1">one-time</span>
+              </div>
+              <p class="mt-2 text-xs text-emerald-300 font-semibold">Just ₹50 more than one index — get both + bonuses.</p>
+
+              <ul class="mt-6 space-y-3 text-sm flex-1">
+                <li class="flex gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 shrink-0"></i><span>Full Nifty 50 Toolkit <span class="text-slate-500">(Pine v5 + Excel + PDF)</span></span></li>
+                <li class="flex gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 shrink-0"></i><span>Full Bank Nifty Toolkit <span class="text-slate-500">(Pine v5 + Excel + PDF)</span></span></li>
+                <li class="flex gap-3"><i data-lucide="gift" class="w-5 h-5 text-amber-400 shrink-0"></i><span><strong class="text-amber-300">BONUS:</strong> Excel Auto CPR Range Predictor</span></li>
+                <li class="flex gap-3"><i data-lucide="gift" class="w-5 h-5 text-amber-400 shrink-0"></i><span><strong class="text-amber-300">BONUS:</strong> Cross-Index Strike Execution Guide <span class="text-slate-500">(Zerodha · Angel One · Groww)</span></span></li>
+                <li class="flex gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 shrink-0"></i><span>Lifetime access &amp; free updates</span></li>
+              </ul>
+
+              <a id="checkoutBtn" href="#combo-checkout" data-plan="combo" class="plan-link mt-7 w-full inline-flex items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-slate-950 font-extrabold text-base sm:text-lg px-6 py-5 animate-pulseGlow transition text-center">
+                <i data-lucide="smartphone" class="w-5 h-5 shrink-0"></i>
+                <span>Unlock Everything – ₹149 <span class="block text-xs font-bold opacity-80">UPI / GPay · Instant ZIP Download</span></span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Bank Nifty ₹99 -->
+          <div class="reveal order-3 rounded-3xl bg-slate-950/80 border border-slate-800 p-7 flex flex-col">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-xl bg-indigo-500/10 border border-indigo-500/30 grid place-items-center"><i data-lucide="landmark" class="w-5 h-5 text-indigo-400"></i></div>
+              <div>
+                <h3 class="text-lg font-bold text-white">Bank Nifty Pro Edition</h3>
+                <p class="text-xs text-slate-500">For high-volatility Bank Nifty traders</p>
+              </div>
+            </div>
+            <div class="mt-6 flex items-end gap-2">
+              <span class="text-5xl font-black text-white font-mono leading-none">₹99</span>
+              <span class="text-sm text-slate-400 pb-1">one-time</span>
+            </div>
+            <ul class="mt-6 space-y-3 text-sm flex-1">
+              <li class="flex gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-400 shrink-0"></i>Bank Nifty Pine Script v5 Indicator</li>
+              <li class="flex gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-400 shrink-0"></i>Excel Calculator + Position Sizing</li>
+              <li class="flex gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-400 shrink-0"></i>Bank Nifty 20-Page PDF Strategy Guide</li>
+              <li class="flex gap-3 text-slate-600"><i data-lucide="x" class="w-5 h-5 shrink-0"></i><span class="line-through">Nifty 50 Toolkit</span></li>
+              <li class="flex gap-3 text-slate-600"><i data-lucide="x" class="w-5 h-5 shrink-0"></i><span class="line-through">Combo-only Bonuses</span></li>
+            </ul>
+            <a href="#banknifty-checkout" data-plan="banknifty" class="plan-link mt-7 w-full inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700 hover:border-indigo-500/60 hover:bg-indigo-500/10 text-white font-bold px-5 py-3.5 transition">
+              Get Bank Nifty Suite – ₹99
+            </a>
+          </div>
+        </div>
+
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-slate-500 font-medium reveal">
+          <span class="flex items-center gap-1.5"><i data-lucide="lock" class="w-3.5 h-3.5 text-emerald-400"></i>Secure Checkout</span>
+          <span class="flex items-center gap-1.5"><i data-lucide="file-archive" class="w-3.5 h-3.5 text-indigo-400"></i>Instant ZIP Delivery</span>
+          <span class="flex items-center gap-1.5"><i data-lucide="indian-rupee" class="w-3.5 h-3.5 text-emerald-400"></i>UPI · Cards · NetBanking</span>
+          <span class="flex items-center gap-1.5"><i data-lucide="line-chart" class="w-3.5 h-3.5 text-indigo-400"></i>Works on TradingView Free plan</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 7. TESTIMONIALS ============ -->
+    <section class="py-20 sm:py-28">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto reveal">
+          <span class="text-xs font-bold tracking-[0.2em] text-indigo-400 uppercase">Social Proof</span>
+          <h2 class="mt-3 text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">Traders Who Stopped Guessing</h2>
+          <p class="mt-4 text-slate-400 text-base sm:text-lg">Real feedback from disciplined option buyers using the 10:15 AM rule.</p>
+        </div>
+
+        <div class="mt-14 grid md:grid-cols-3 gap-6" id="testimonials"></div>
+        <p class="mt-6 text-center text-[11px] text-slate-500">Testimonials reflect individual experiences and are not indicative of future results. Trading involves risk of loss.</p>
+      </div>
+    </section>
+
+    <!-- ============ 8. FAQ ============ -->
+    <section id="faq" class="py-20 sm:py-28 bg-slate-900/40 border-y border-slate-800/80">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center reveal">
+          <span class="text-xs font-bold tracking-[0.2em] text-emerald-400 uppercase">FAQ</span>
+          <h2 class="mt-3 text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">Frequently Asked Questions</h2>
+        </div>
+
+        <div class="mt-12 space-y-3" id="faqList">
+          <div class="faq-item open reveal rounded-xl bg-slate-900 border border-slate-800">
+            <button class="faq-btn w-full flex items-center justify-between gap-4 text-left px-5 sm:px-6 py-5" aria-expanded="true">
+              <span class="font-semibold text-white">Do I need TradingView Paid subscription?</span>
+              <i data-lucide="plus" class="faq-icon w-5 h-5 text-slate-400 shrink-0 transition-transform duration-300"></i>
+            </button>
+            <div class="faq-body"><div class="overflow-hidden"><p class="px-5 sm:px-6 pb-5 text-slate-400 leading-relaxed"><strong class="text-emerald-400">No.</strong> The indicators work 100% on the TradingView <strong class="text-white">Free</strong> plan. Just copy-paste the Pine Script v5 code into the Pine Editor and click "Add to chart".</p></div></div>
+          </div>
+
+          <div class="faq-item reveal rounded-xl bg-slate-900 border border-slate-800">
+            <button class="faq-btn w-full flex items-center justify-between gap-4 text-left px-5 sm:px-6 py-5" aria-expanded="false">
+              <span class="font-semibold text-white">Is it suitable for beginners?</span>
+              <i data-lucide="plus" class="faq-icon w-5 h-5 text-slate-400 shrink-0 transition-transform duration-300"></i>
+            </button>
+            <div class="faq-body"><div class="overflow-hidden"><p class="px-5 sm:px-6 pb-5 text-slate-400 leading-relaxed"><strong class="text-emerald-400">Yes.</strong> The system is fully rule-based with an exact ATM strike selection guide. No subjective chart reading — you simply follow the levels and the 10:15 AM rule.</p></div></div>
+          </div>
+
+          <div class="faq-item reveal rounded-xl bg-slate-900 border border-slate-800">
+            <button class="faq-btn w-full flex items-center justify-between gap-4 text-left px-5 sm:px-6 py-5" aria-expanded="false">
+              <span class="font-semibold text-white">How will I receive the files?</span>
+              <i data-lucide="plus" class="faq-icon w-5 h-5 text-slate-400 shrink-0 transition-transform duration-300"></i>
+            </button>
+            <div class="faq-body"><div class="overflow-hidden"><p class="px-5 sm:px-6 pb-5 text-slate-400 leading-relaxed">You get an <strong class="text-white">instant automated download link</strong> immediately after payment (also sent to your email). One ZIP file contains all indicators, Excel calculators and PDF guides.</p></div></div>
+          </div>
+
+          <div class="faq-item reveal rounded-xl bg-slate-900 border border-slate-800">
+            <button class="faq-btn w-full flex items-center justify-between gap-4 text-left px-5 sm:px-6 py-5" aria-expanded="false">
+              <span class="font-semibold text-white">How much capital do I need to start?</span>
+              <i data-lucide="plus" class="faq-icon w-5 h-5 text-slate-400 shrink-0 transition-transform duration-300"></i>
+            </button>
+            <div class="faq-body"><div class="overflow-hidden"><p class="px-5 sm:px-6 pb-5 text-slate-400 leading-relaxed">The strategy is designed for option buyers, so you can start with 1 lot of an ATM option. The Excel calculator includes position sizing so you never risk more than your defined amount per trade.</p></div></div>
+          </div>
+
+          <div class="faq-item reveal rounded-xl bg-slate-900 border border-slate-800">
+            <button class="faq-btn w-full flex items-center justify-between gap-4 text-left px-5 sm:px-6 py-5" aria-expanded="false">
+              <span class="font-semibold text-white">Is this a tips / advisory service?</span>
+              <i data-lucide="plus" class="faq-icon w-5 h-5 text-slate-400 shrink-0 transition-transform duration-300"></i>
+            </button>
+            <div class="faq-body"><div class="overflow-hidden"><p class="px-5 sm:px-6 pb-5 text-slate-400 leading-relaxed">No. This is a purely educational technical-analysis toolkit. We do not provide buy/sell tips, calls or investment advice. You learn the method and make your own decisions.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="py-20 sm:py-24">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
+        <h2 class="text-3xl sm:text-4xl font-black text-white tracking-tight">Tomorrow at 10:15 AM, you'll either be guessing… <span class="text-gradient">or executing.</span></h2>
+        <p class="mt-4 text-slate-400">Get the complete Nifty 50 &amp; Bank Nifty CPR system today for a one-time ₹149 — or start with a single index at ₹99.</p>
+        <a href="#pricing" class="mt-8 inline-flex items-center gap-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-lg px-8 py-5 animate-pulseGlow transition">
+          <i data-lucide="unlock" class="w-5 h-5"></i> Unlock Master Combo – ₹149
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ 9. FOOTER ============ -->
+  <footer class="border-t border-slate-800 bg-slate-950 pb-28 sm:pb-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-6 sm:p-8">
+        <div class="flex items-center gap-2 text-amber-400 font-bold text-sm uppercase tracking-wider">
+          <i data-lucide="alert-triangle" class="w-5 h-5"></i> SEBI / Educational Disclaimer
+        </div>
+        <div class="mt-4 space-y-3 text-sm text-slate-400 leading-relaxed">
+          <p><strong class="text-slate-200">We are NOT SEBI-registered investment advisers or research analysts.</strong> All content, indicators, calculators and guides provided under "CPR Pro Trader" are strictly for <strong class="text-slate-200">educational and technical analysis purposes only</strong> and must not be construed as investment advice, recommendations, or tips to buy or sell any security or derivative.</p>
+          <p>Trading in equity derivatives (F&amp;O) involves substantial risk. As per SEBI's study, <strong class="text-slate-200">9 out of 10 individual traders in equity F&amp;O incurred net losses</strong>. Past performance, backtests and testimonials are not indicative of future results. Please consult a SEBI-registered financial adviser before making any trading or investment decisions. You are solely responsible for your trades and their outcomes.</p>
+          <p>TradingView is a registered trademark of TradingView, Inc. Zerodha, Angel One and Groww are trademarks of their respective owners. We are not affiliated with or endorsed by any of them.</p>
+        </div>
+      </div>
+
+      <div class="mt-10 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
+        <div class="flex items-center gap-2 font-bold text-slate-300">
+          <i data-lucide="candlestick-chart" class="w-5 h-5 text-emerald-400"></i> CPR PRO TRADER
+        </div>
+        <p>Copyright © 2026 CPR Pro Trader. All rights reserved.</p>
+        <div class="flex gap-5">
+          <a href="#" class="hover:text-slate-300">Terms</a>
+          <a href="#" class="hover:text-slate-300">Privacy</a>
+          <a href="#" class="hover:text-slate-300">Refund Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ FLOATING CTA BAR ============ -->
+  <div id="floatBar" class="fixed bottom-0 inset-x-0 z-40 translate-y-full transition-transform duration-500">
+    <div class="mx-auto max-w-5xl px-3 pb-3 sm:pb-4">
+      <div class="glass rounded-2xl shadow-2xl shadow-black/60 border-emerald-500/30 px-4 py-3 flex items-center justify-between gap-3">
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <span class="hidden sm:inline font-bold text-white text-sm truncate">CPR Pro Master Combo</span>
+            <span class="text-slate-500 line-through text-xs font-mono">₹198</span>
+            <span class="text-emerald-400 font-black font-mono">₹149</span>
+          </div>
+          <div class="text-[11px] text-rose-300 font-semibold flex items-center gap-1">
+            <i data-lucide="timer" class="w-3 h-3"></i> Ends in <span class="font-mono tabular-nums" data-countdown>02:45:10</span>
+          </div>
+        </div>
+        <a href="#combo-checkout" data-plan="combo" class="plan-link shrink-0 inline-flex items-center gap-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-sm px-4 sm:px-6 py-3 transition shadow-lg shadow-emerald-500/30">
+          <i data-lucide="zap" class="w-4 h-4"></i> <span class="sm:hidden">Buy Now</span><span class="hidden sm:inline">Get Instant Access</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================
+       CONFIG — paste your real checkout links here (Cosmofeed / Razorpay / Instamojo)
+    ========================================================= */
+    const CHECKOUT_URLS = {
+      nifty:     'https://superprofile.bio/vp/6ac3dfc667fb670013ff1d52', // Nifty 50 Pro Edition – ₹99
+      banknifty: 'https://superprofile.bio/vp/6ac3dfe8c6d7af001346ebe6', // Bank Nifty Pro Edition – ₹99
+      combo:     'https://superprofile.bio/vp/6ac3e00a97385100135b0bf4', // Master Combo Suite – ₹149
+    };
+    document.querySelectorAll('[data-plan]').forEach(a => {
+      a.setAttribute('href', CHECKOUT_URLS[a.dataset.plan]);
+      a.setAttribute('target', '_blank');
+      a.setAttribute('rel', 'noopener noreferrer');
+    });
+
+    /* ---------- Hero chart (SVG) ---------- */
+    (function buildChart() {
+      const svg = document.getElementById('heroChart');
+      const NS = 'http://www.w3.org/2000/svg';
+      const W = 600, H = 330, top = 18, bottom = 300, pMax = 24640, pMin = 24440;
+      const y = p => top + (pMax - p) * ((bottom - top) / (pMax - pMin));
+      const el = (tag, attrs, parent = svg) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.appendChild(e); return e; };
+
+      // [open, high, low, close]
+      const candles = [
+        [24510,24528,24498,24522],[24522,24540,24515,24535],[24535,24548,24525,24530],[24530,24538,24505,24512],
+        [24512,24525,24500,24520],[24520,24545,24518,24541],[24541,24556,24535,24550],[24550,24560,24538,24543],
+        [24543,24552,24530,24548],[24548,24565,24545,24560],[24560,24570,24552,24556],[24556,24568,24550,24565],
+        [24565,24588,24562,24584], // 10:15 breakout
+        [24584,24592,24576,24589],[24589,24596,24580,24583],[24583,24600,24579,24597],[24597,24606,24590,24602],
+        [24602,24608,24594,24598],[24598,24612,24595,24609],[24609,24616,24603,24606],[24606,24618,24601,24615],
+        [24615,24624,24610,24621],[24621,24626,24612,24616],[24616,24622,24608,24618]
+      ];
+      const x0 = 18, step = 20, bw = 11, chartRight = x0 + candles.length * step;
+      const cx = i => x0 + i * step + step / 2;
+
+      // grid
+      for (let p = 24460; p <= 24640; p += 20) el('line', { x1: 0, x2: chartRight, y1: y(p), y2: y(p), stroke: 'rgba(148,163,184,0.06)' });
+
+      // reference hour zone
+      el('rect', { x: x0, y: top, width: 12 * step, height: bottom - top, fill: 'rgba(148,163,184,0.04)' });
+      el('text', { x: x0 + 6, y: bottom + 18, fill: '#64748b', 'font-size': 10, 'font-family': 'Inter', 'font-weight': 600 }).textContent = '09:15  REFERENCE HOUR';
+
+      // CPR band
+      el('rect', { x: 0, y: y(24530), width: chartRight, height: y(24500) - y(24530), fill: 'rgba(99,102,241,0.12)' });
+
+      const levels = [
+        { n: 'R2', p: 24620, c: '#10b981', d: '' },
+        { n: 'R1', p: 24575, c: '#34d399', d: '5 4' },
+        { n: 'TC', p: 24530, c: '#818cf8', d: '' },
+        { n: 'P',  p: 24515, c: '#a5b4fc', d: '2 3' },
+        { n: 'BC', p: 24500, c: '#818cf8', d: '' },
+        { n: 'S1', p: 24455, c: '#f43f5e', d: '5 4' },
+      ];
+      levels.forEach(l => {
+        el('line', { x1: 0, x2: chartRight, y1: y(l.p), y2: y(l.p), stroke: l.c, 'stroke-width': l.n === 'R2' ? 1.5 : 1, 'stroke-dasharray': l.d, opacity: .85 });
+        const g = el('g', {});
+        el('rect', { x: chartRight + 6, y: y(l.p) - 9, width: 70, height: 18, rx: 4, fill: l.c, opacity: .16 }, g);
+        el('text', { x: chartRight + 11, y: y(l.p) + 4, fill: l.c, 'font-size': 10.5, 'font-family': 'JetBrains Mono', 'font-weight': 700 }, g).textContent = l.n;
+        el('text', { x: chartRight + 71, y: y(l.p) + 4, fill: '#cbd5e1', 'font-size': 10, 'font-family': 'JetBrains Mono', 'text-anchor': 'end' }, g).textContent = l.p.toLocaleString('en-IN');
+      });
+
+      // 10:15 vertical line
+      const bx = x0 + 12 * step;
+      el('line', { x1: bx, x2: bx, y1: top, y2: bottom, stroke: '#818cf8', 'stroke-dasharray': '3 3', opacity: .8 });
+      const tag = el('g', {});
+      el('rect', { x: bx - 26, y: bottom + 6, width: 52, height: 17, rx: 4, fill: '#6366f1' }, tag);
+      el('text', { x: bx, y: bottom + 18, fill: '#fff', 'font-size': 10, 'font-family': 'JetBrains Mono', 'font-weight': 700, 'text-anchor': 'middle' }, tag).textContent = '10:15';
+
+      // candles
+      candles.forEach(([o, h, l, c], i) => {
+        const up = c >= o, col = up ? '#10b981' : '#f43f5e';
+        const g = el('g', { class: 'candle', style: `animation-delay:${0.15 + i * 0.12}s` });
+        el('line', { x1: cx(i), x2: cx(i), y1: y(h), y2: y(l), stroke: col, 'stroke-width': 1.3 }, g);
+        el('rect', { x: cx(i) - bw / 2, y: y(Math.max(o, c)), width: bw, height: Math.max(1.5, Math.abs(y(o) - y(c))), fill: col, rx: 1.5 }, g);
+      });
+
+      // Entry marker
+      const ei = 12, ex = cx(ei);
+      const entry = el('g', { class: 'fade-late', style: `animation-delay:${0.15 + 13 * 0.12}s` });
+      el('circle', { cx: ex, cy: y(24575), r: 5, fill: '#0b1220', stroke: '#34d399', 'stroke-width': 2 }, entry);
+      el('line', { x1: ex, y1: y(24575) + 5, x2: ex + 14, y2: y(24575) + 30, stroke: '#34d399', 'stroke-width': 1, opacity: .7 }, entry);
+      el('rect', { x: ex + 10, y: y(24575) + 30, width: 92, height: 30, rx: 5, fill: '#052e2b', stroke: '#10b981', 'stroke-opacity': .6 }, entry);
+      el('text', { x: ex + 56, y: y(24575) + 43, fill: '#34d399', 'font-size': 9.5, 'font-family': 'Inter', 'font-weight': 800, 'text-anchor': 'middle' }, entry).textContent = 'R1 BREAKOUT';
+      el('text', { x: ex + 56, y: y(24575) + 55, fill: '#cbd5e1', 'font-size': 9, 'font-family': 'JetBrains Mono', 'text-anchor': 'middle' }, entry).textContent = 'BUY ATM CE';
+
+      // Target marker
+      const ti = 21, tx = cx(ti);
+      const tgt = el('g', { class: 'fade-late', style: `animation-delay:${0.15 + 22 * 0.12}s` });
+      el('circle', { cx: tx, cy: y(24620), r: 9, fill: 'rgba(16,185,129,0.25)' }, tgt);
+      el('circle', { cx: tx, cy: y(24620), r: 4.5, fill: '#10b981' }, tgt);
+      // profit path
+      el('path', { d: `M${ex} ${y(24575)} L${tx} ${y(24620)}`, stroke: '#10b981', 'stroke-width': 1.2, 'stroke-dasharray': '4 4', fill: 'none', opacity: .7 }, tgt);
+      el('rect', { x: ex, y: y(24620), width: tx - ex, height: y(24575) - y(24620), fill: 'rgba(16,185,129,0.08)' }, tgt);
+
+      // time axis
+      [['11:00', 21], ['11:15', 24]].forEach(([t, i]) => {
+        if (i < candles.length) el('text', { x: x0 + i * step, y: bottom + 18, fill: '#64748b', 'font-size': 10, 'font-family': 'JetBrains Mono', 'text-anchor': 'middle' }).textContent = t;
+      });
+    })();
+
+    /* ---------- Ticker ---------- */
+    (function ticker() {
+      const items = [
+        ['NIFTY 50', '24,621.40', '+0.47%', true], ['BANK NIFTY', '51,284.65', '+0.62%', true], ['FINNIFTY', '23,145.20', '+0.31%', true],
+        ['INDIA VIX', '12.84', '-3.12%', false], ['NIFTY CPR', 'NARROW', 'TRENDING', true], ['BANKNIFTY CPR', 'NARROW', 'TRENDING', true],
+        ['ENTRY WINDOW', '10:15 AM', 'IST', true], ['MAX TRADES', '1 / DAY', 'DISCIPLINE', true],
+      ];
+      const html = items.map(([n, v, c, up]) => `<span class="flex items-center gap-2 whitespace-nowrap"><span class="text-slate-500">${n}</span><span class="text-slate-200">${v}</span><span class="${up ? 'text-emerald-400' : 'text-rose-400'}">${c}</span></span>`).join('');
+      document.getElementById('tickerA').innerHTML = html;
+      document.getElementById('tickerB').innerHTML = html;
+    })();
+
+    /* ---------- Testimonials ---------- */
+    (function testimonials() {
+      const data = [
+        { name: 'Rahul Verma', city: 'Pune', role: 'Part-time trader, IT professional', idx: 'NIFTY 24600 CE', pnl: '+₹8,437.50', pct: '+42.1%', pts: [8, 10, 9, 14, 13, 18, 22, 21, 27, 30],
+          text: 'I used to take 8–10 trades a day and bleed. Now I wait till 10:15, mark R1/S1 and take one clean trade. My first profitable month in two years.' },
+        { name: 'Sneha Iyer', city: 'Bengaluru', role: 'Option buyer, 3 yrs', idx: 'BANKNIFTY 51300 CE', pnl: '+₹12,960.00', pct: '+58.6%', pts: [6, 7, 11, 10, 15, 19, 18, 24, 28, 31],
+          text: 'The Pine Script plots everything automatically — even on the free TradingView plan. The narrow CPR predictor alone saved me from so many sideways days.' },
+        { name: 'Amit Patel', city: 'Ahmedabad', role: 'Full-time trader', idx: 'NIFTY 24450 PE', pnl: '+₹6,712.50', pct: '+36.4%', pts: [9, 8, 12, 11, 13, 17, 16, 20, 23, 26],
+          text: 'Strike selection matrix for Zerodha is gold. Clear entry, clear SL, clear target. No emotions, no revenge trading. Exactly what I needed.' },
+      ];
+      const spark = pts => {
+        const max = Math.max(...pts), min = Math.min(...pts);
+        const d = pts.map((p, i) => `${(i / (pts.length - 1)) * 100},${36 - ((p - min) / (max - min)) * 30}`).join(' L');
+        return `<svg viewBox="0 0 100 40" preserveAspectRatio="none" class="w-full h-10"><defs><linearGradient id="g${pts[0]}${pts[9]}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#10b981" stop-opacity=".35"/><stop offset="1" stop-color="#10b981" stop-opacity="0"/></linearGradient></defs><path d="M${d} L100,40 L0,40Z" fill="url(#g${pts[0]}${pts[9]})"/><path d="M${d}" fill="none" stroke="#10b981" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg>`;
+      };
+      const stars = '<div class="flex gap-0.5 text-amber-400">' + '★★★★★'.split('').map(s => `<span>${s}</span>`).join('') + '</div>';
+      document.getElementById('testimonials').innerHTML = data.map((t, i) => `
+        <figure class="reveal rounded-2xl bg-slate-900 border border-slate-800 p-6 flex flex-col" style="transition-delay:${i * 0.1}s">
+          <div class="rounded-xl bg-slate-950 border border-slate-800 overflow-hidden">
+            <div class="flex items-center justify-between px-3 py-2 border-b border-slate-800 text-[10px] font-semibold text-slate-500">
+              <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>P&amp;L • Today</span><span class="font-mono">${t.idx}</span>
+            </div>
+            <div class="px-3 pt-3 flex items-end justify-between">
+              <div><div class="text-[10px] text-slate-500 font-semibold">Realised P&amp;L</div><div class="text-xl font-black font-mono text-emerald-400">${t.pnl}</div></div>
+              <span class="text-xs font-bold font-mono text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded">${t.pct}</span>
+            </div>
+            <div class="px-1 pb-1">${spark(t.pts)}</div>
+          </div>
+          <div class="mt-5 flex items-center justify-between">${stars}<span class="flex items-center gap-1 text-[11px] font-semibold text-emerald-400"><i data-lucide="badge-check" class="w-4 h-4"></i>Verified Buyer</span></div>
+          <blockquote class="mt-3 text-slate-300 leading-relaxed text-[15px] flex-1">“${t.text}”</blockquote>
+          <figcaption class="mt-5 flex items-center gap-3 pt-5 border-t border-slate-800">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-indigo-500 grid place-items-center text-sm font-black text-slate-950">${t.name.split(' ').map(n => n[0]).join('')}</div>
+            <div><div class="font-semibold text-white text-sm">${t.name} <span class="text-slate-500 font-normal">· ${t.city}</span></div><div class="text-xs text-slate-500">${t.role}</div></div>
+          </figcaption>
+        </figure>`).join('');
+    })();
+
+    /* ---------- Icons ---------- */
+    if (window.lucide) lucide.createIcons();
+
+    /* ---------- Countdown (persists across reloads, auto-resets) ---------- */
+    (function countdown() {
+      const KEY = 'cpr_offer_end', DURATION = (2 * 3600 + 45 * 60 + 10) * 1000;
+      let end = parseInt(localStorage.getItem(KEY) || '0', 10);
+      if (!end || end < Date.now()) { end = Date.now() + DURATION; localStorage.setItem(KEY, end); }
+      const h = document.getElementById('cd-h'), m = document.getElementById('cd-m'), s = document.getElementById('cd-s');
+      const inline = document.querySelectorAll('[data-countdown]');
+      const pad = n => String(n).padStart(2, '0');
+      function tick() {
+        let diff = end - Date.now();
+        if (diff <= 0) { end = Date.now() + DURATION; localStorage.setItem(KEY, end); diff = DURATION; }
+        const hh = Math.floor(diff / 3600000), mm = Math.floor(diff % 3600000 / 60000), ss = Math.floor(diff % 60000 / 1000);
+        h.textContent = pad(hh); m.textContent = pad(mm); s.textContent = pad(ss);
+        inline.forEach(e => e.textContent = `${pad(hh)}:${pad(mm)}:${pad(ss)}`);
+      }
+      tick(); setInterval(tick, 1000);
+    })();
+
+    /* ---------- FAQ accordion ---------- */
+    document.querySelectorAll('.faq-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(i => { i.classList.remove('open'); i.querySelector('.faq-btn').setAttribute('aria-expanded', 'false'); });
+        if (!isOpen) { item.classList.add('open'); btn.setAttribute('aria-expanded', 'true'); }
+      });
+    });
+
+    /* ---------- Mobile menu ---------- */
+    const menuBtn = document.getElementById('menuBtn'), mobileMenu = document.getElementById('mobileMenu');
+    menuBtn.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('hidden') === false;
+      menuBtn.setAttribute('aria-expanded', open);
+    });
+    document.querySelectorAll('.mobile-link').forEach(a => a.addEventListener('click', () => { mobileMenu.classList.add('hidden'); menuBtn.setAttribute('aria-expanded', 'false'); }));
+
+    /* ---------- Smooth scroll (with sticky header offset) ---------- */
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const id = a.getAttribute('href');
+        if (id.length < 2) return;
+        const target = document.querySelector(id);
+        if (!target) return; // e.g. #cosmofeed-checkout placeholder
+        e.preventDefault();
+        const offset = document.getElementById('navbar').offsetHeight + 8;
+        window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+      });
+    });
+
+    /* ---------- Navbar style + floating CTA + active link ---------- */
+    const nav = document.getElementById('navbar'), floatBar = document.getElementById('floatBar'), pricing = document.getElementById('pricing');
+    const sections = ['strategy', 'inside', 'backtest', 'pricing', 'faq'].map(id => document.getElementById(id));
+    function onScroll() {
+      const sc = window.scrollY;
+      nav.classList.toggle('bg-slate-950/80', sc > 10);
+      nav.classList.toggle('backdrop-blur-xl', sc > 10);
+      nav.classList.toggle('border-slate-800', sc > 10);
+
+      const pr = pricing.getBoundingClientRect();
+      const pricingVisible = pr.top < window.innerHeight * 0.8 && pr.bottom > 100;
+      const show = sc > 700 && !pricingVisible;
+      floatBar.classList.toggle('translate-y-full', !show);
+
+      let current = null;
+      sections.forEach(s => { if (s && s.getBoundingClientRect().top < 140) current = s.id; });
+      document.querySelectorAll('.nav-link').forEach(l => {
+        const active = l.getAttribute('href') === '#' + current;
+        l.classList.toggle('text-white', active);
+        l.classList.toggle('text-slate-400', !active);
+      });
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    /* ---------- Reveal on scroll ---------- */
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  </script>
+</body>
+</html>
